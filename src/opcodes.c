@@ -39,13 +39,11 @@ void a(cpu* _cpu, int op) {
 void ADD(cpu* _cpu, int op) {
     //We are ignoring overflow traps for now
     ADDU(_cpu,op);
-    advancePC(_cpu);
 }
 
 void ADDI(cpu* _cpu, int op) {
     //We are ignoring overflow traps for now
     ADDIU(_cpu,op);
-    advancePC(_cpu);
 }
 
 void ADDIU(cpu* _cpu, int op) {
@@ -93,7 +91,7 @@ void b(cpu* _cpu, int op) {
 #define BXXX(NAME,COND,LIKELY,LINK) \
 void NAME(cpu* _cpu, int op){\
 	uint32_t offset = signExtend18((op&0x0000ffff) * 4);\
-	uint32_t addr = _cpu->pc + offset;\
+	uint32_t addr = _cpu->pc + 4 + offset;\
 	DO_DELAY_SLOT(_cpu); \
 	if (LINK){_cpu->GPRs[31] = _cpu->pc + 4;}\
 	if(COND)\
