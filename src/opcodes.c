@@ -248,7 +248,12 @@ void ORI(cpu* _cpu, int op) {
 }
 
 void PREF(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: PREF\n"); exit(1); }
-void SB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SB\n"); exit(1); }
+
+void SB(cpu* _cpu, int op) { 
+    _cpu->_mmu->writeVAByte(_cpu->_mmu, _cpu->GPRs[getRs(op)] + getSigned16(getImm(op)), _cpu->GPRs[getRt(op)]);
+    advancePC(_cpu);
+}
+
 void SC(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SC\n"); exit(1); }
 void SDBBP(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SDBBP\n"); exit(1); }
 void SH(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SH\n"); exit(1); }
