@@ -52,5 +52,6 @@ typedef struct _cp0 {
 } cp0;
 
 void initCPU(cpu* _cpu);
+void advancePC(cpu* _cpu);
 
 #endif

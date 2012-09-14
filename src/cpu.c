@@ -13,6 +13,11 @@ void step(cpu* _cpu)
    _cpu->doOp(_cpu, op);
 }
 
+void advancePC(cpu* _cpu)
+{
+    _cpu->pc += 4; 
+}
+
 void initCPU(cpu* _cpu)
 {
     _cpu->_mmu = (mmu*)malloc(sizeof(mmu));
