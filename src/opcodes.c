@@ -3,211 +3,108 @@
 #include "cpu.h"
 #include "autogen/opcodes.h"
 
-void MOVN(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MOVN\n"); exit(1); }
-
-void DERET(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: DERET\n"); exit(1); }
-
-void JR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JR\n"); exit(1); }
-
-void MOVZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MOVZ\n"); exit(1); }
-
-void BNEL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BNEL\n"); exit(1); }
-
-void TLBR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLBR\n"); exit(1); }
-
-void TLBP(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLBP\n"); exit(1); }
-
-void BGTZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGTZ\n"); exit(1); }
-
-void LBU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LBU\n"); exit(1); }
-
-void SYSCALL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SYSCALL\n"); exit(1); }
-
-void MTC0(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MTC0\n"); exit(1); }
-
-void TGEU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TGEU\n"); exit(1); }
-
-void TGEI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TGEI\n"); exit(1); }
-
-void JAL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JAL\n"); exit(1); }
-
-void MSUBU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MSUBU\n"); exit(1); }
-
-void BNE(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BNE\n"); exit(1); }
-
-void ADDU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ADDU\n"); exit(1); }
-
-void TEQI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TEQI\n"); exit(1); }
-
-void SLLV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLLV\n"); exit(1); }
-
-void SLTI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLTI\n"); exit(1); }
-
-void TGEIU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TGEIU\n"); exit(1); }
-
-void SLTU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLTU\n"); exit(1); }
-
-void TNEI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TNEI\n"); exit(1); }
-
-void OR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: OR\n"); exit(1); }
-
-void ADDI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ADDI\n"); exit(1); }
-
-void BLTZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLTZ\n"); exit(1); }
-
-void TLTI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLTI\n"); exit(1); }
-
-void MFHI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MFHI\n"); exit(1); }
-
-void SYNC(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SYNC\n"); exit(1); }
-
-void BGTZL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGTZL\n"); exit(1); }
-
-void LUI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LUI\n"); exit(1); }
-
-void BEQ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BEQ\n"); exit(1); }
-
-void MSUB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MSUB\n"); exit(1); }
-
-void TLTIU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLTIU\n"); exit(1); }
-
-void MADD(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MADD\n"); exit(1); }
-
-void SUBU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SUBU\n"); exit(1); }
-
-void BLTZL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLTZL\n"); exit(1); }
-
-void BLTZALL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLTZALL\n"); exit(1); }
-
-void AND(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: AND\n"); exit(1); }
-
-void TNE(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TNE\n"); exit(1); }
-
-void TLBWI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLBWI\n"); exit(1); }
-
-void MTLO(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MTLO\n"); exit(1); }
-
-void NOR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: NOR\n"); exit(1); }
-
-void SDBBP(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SDBBP\n"); exit(1); }
-
-void SUB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SUB\n"); exit(1); }
-
-void BLEZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLEZ\n"); exit(1); }
-
-void BGEZL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZL\n"); exit(1); }
-
-void MUL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MUL\n"); exit(1); }
-
-void MULTU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MULTU\n"); exit(1); }
-
-void MADDU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MADDU\n"); exit(1); }
-
-void ANDI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ANDI\n"); exit(1); }
-
-void TEQ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TEQ\n"); exit(1); }
-
-void CLO(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: CLO\n"); exit(1); }
-
-void TLT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLT\n"); exit(1); }
-
-void J(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: J\n"); exit(1); }
-
-void SRL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRL\n"); exit(1); }
-
-void ADD(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ADD\n"); exit(1); }
-
-void CLZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: CLZ\n"); exit(1); }
-
-void XORI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: XORI\n"); exit(1); }
-
-void DIVU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: DIVU\n"); exit(1); }
-
-void BGEZALL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZALL\n"); exit(1); }
-
-void WAIT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: WAIT\n"); exit(1); }
-
-void b(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: b\n"); exit(1); }
-
-void JALR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JALR\n"); exit(1); }
-
-void ERET(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ERET\n"); exit(1); }
-
-void SLTIU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLTIU\n"); exit(1); }
-
-void PREF(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: PREF\n"); exit(1); }
-
-void SW(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SW\n"); exit(1); }
-
-void BREAK(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BREAK\n"); exit(1); }
-
-void SH(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SH\n"); exit(1); }
-
-void SRLV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRLV\n"); exit(1); }
-
-void ORI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ORI\n"); exit(1); }
-
-void SC(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SC\n"); exit(1); }
-
-void SB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SB\n"); exit(1); }
-
-void BEQL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BEQL\n"); exit(1); }
-
-void SWL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SWL\n"); exit(1); }
-
-void MFLO(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MFLO\n"); exit(1); }
-
-void LWR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LWR\n"); exit(1); }
-
-void CACHE(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: CACHE\n"); exit(1); }
-
-void BLTZAL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLTZAL\n"); exit(1); }
-
-void SRAV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRAV\n"); exit(1); }
-
-void SRA(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRA\n"); exit(1); }
-
-void LWL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LWL\n"); exit(1); }
-
-void DIV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: DIV\n"); exit(1); }
-
-void SWR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SWR\n"); exit(1); }
-
-void MULT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MULT\n"); exit(1); }
-
-void LB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LB\n"); exit(1); }
-
-void BLEZL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLEZL\n"); exit(1); }
-
-void LL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LL\n"); exit(1); }
-
-void LH(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LH\n"); exit(1); }
-
-void TLTU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLTU\n"); exit(1); }
-
-void LW(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LW\n"); exit(1); }
-
-void TGE(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TGE\n"); exit(1); }
-
-void TLBWR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLBWR\n"); exit(1); }
-
-void ADDIU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ADDIU\n"); exit(1); }
-
-void BGEZAL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZAL\n"); exit(1); }
-
-void XOR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: XOR\n"); exit(1); }
-
-void SLT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLT\n"); exit(1); }
-
-void BGEZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZ\n"); exit(1); }
-
-void SLL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLL\n"); exit(1); }
-
-void MFC0(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MFC0\n"); exit(1); }
-
 void a(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: a\n"); exit(1); }
-
+void ADD(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ADD\n"); exit(1); }
+void ADDI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ADDI\n"); exit(1); }
+void ADDIU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ADDIU\n"); exit(1); }
+void ADDU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ADDU\n"); exit(1); }
+void AND(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: AND\n"); exit(1); }
+void ANDI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ANDI\n"); exit(1); }
+void b(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: b\n"); exit(1); }
+void BEQ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BEQ\n"); exit(1); }
+void BEQL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BEQL\n"); exit(1); }
+void BGEZAL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZAL\n"); exit(1); }
+void BGEZALL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZALL\n"); exit(1); }
+void BGEZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZ\n"); exit(1); }
+void BGEZL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZL\n"); exit(1); }
+void BGTZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGTZ\n"); exit(1); }
+void BGTZL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGTZL\n"); exit(1); }
+void BLEZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLEZ\n"); exit(1); }
+void BLEZL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLEZL\n"); exit(1); }
+void BLTZAL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLTZAL\n"); exit(1); }
+void BLTZALL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLTZALL\n"); exit(1); }
+void BLTZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLTZ\n"); exit(1); }
+void BLTZL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLTZL\n"); exit(1); }
+void BNE(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BNE\n"); exit(1); }
+void BNEL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BNEL\n"); exit(1); }
+void BREAK(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BREAK\n"); exit(1); }
+void CACHE(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: CACHE\n"); exit(1); }
+void CLO(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: CLO\n"); exit(1); }
+void CLZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: CLZ\n"); exit(1); }
+void DERET(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: DERET\n"); exit(1); }
+void DIV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: DIV\n"); exit(1); }
+void DIVU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: DIVU\n"); exit(1); }
+void ERET(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ERET\n"); exit(1); }
+void JAL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JAL\n"); exit(1); }
+void JALR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JALR\n"); exit(1); }
+void J(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: J\n"); exit(1); }
+void JR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JR\n"); exit(1); }
+void LB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LB\n"); exit(1); }
+void LBU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LBU\n"); exit(1); }
+void LH(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LH\n"); exit(1); }
 void LHU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LHU\n"); exit(1); }
-
+void LL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LL\n"); exit(1); }
+void LUI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LUI\n"); exit(1); }
+void LW(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LW\n"); exit(1); }
+void LWL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LWL\n"); exit(1); }
+void LWR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LWR\n"); exit(1); }
+void MADD(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MADD\n"); exit(1); }
+void MADDU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MADDU\n"); exit(1); }
+void MFC0(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MFC0\n"); exit(1); }
+void MFHI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MFHI\n"); exit(1); }
+void MFLO(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MFLO\n"); exit(1); }
+void MOVN(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MOVN\n"); exit(1); }
+void MOVZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MOVZ\n"); exit(1); }
+void MSUB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MSUB\n"); exit(1); }
+void MSUBU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MSUBU\n"); exit(1); }
+void MTC0(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MTC0\n"); exit(1); }
 void MTHI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MTHI\n"); exit(1); }
+void MTLO(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MTLO\n"); exit(1); }
+void MUL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MUL\n"); exit(1); }
+void MULT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MULT\n"); exit(1); }
+void MULTU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MULTU\n"); exit(1); }
+void NOR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: NOR\n"); exit(1); }
+void OR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: OR\n"); exit(1); }
+void ORI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ORI\n"); exit(1); }
+void PREF(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: PREF\n"); exit(1); }
+void SB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SB\n"); exit(1); }
+void SC(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SC\n"); exit(1); }
+void SDBBP(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SDBBP\n"); exit(1); }
+void SH(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SH\n"); exit(1); }
+void SLL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLL\n"); exit(1); }
+void SLLV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLLV\n"); exit(1); }
+void SLT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLT\n"); exit(1); }
+void SLTI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLTI\n"); exit(1); }
+void SLTIU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLTIU\n"); exit(1); }
+void SLTU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLTU\n"); exit(1); }
+void SRA(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRA\n"); exit(1); }
+void SRAV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRAV\n"); exit(1); }
+void SRL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRL\n"); exit(1); }
+void SRLV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRLV\n"); exit(1); }
+void SUB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SUB\n"); exit(1); }
+void SUBU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SUBU\n"); exit(1); }
+void SW(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SW\n"); exit(1); }
+void SWL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SWL\n"); exit(1); }
+void SWR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SWR\n"); exit(1); }
+void SYNC(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SYNC\n"); exit(1); }
+void SYSCALL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SYSCALL\n"); exit(1); }
+void TEQ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TEQ\n"); exit(1); }
+void TEQI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TEQI\n"); exit(1); }
+void TGE(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TGE\n"); exit(1); }
+void TGEI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TGEI\n"); exit(1); }
+void TGEIU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TGEIU\n"); exit(1); }
+void TGEU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TGEU\n"); exit(1); }
+void TLBP(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLBP\n"); exit(1); }
+void TLBR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLBR\n"); exit(1); }
+void TLBWI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLBWI\n"); exit(1); }
+void TLBWR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLBWR\n"); exit(1); }
+void TLT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLT\n"); exit(1); }
+void TLTI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLTI\n"); exit(1); }
+void TLTIU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLTIU\n"); exit(1); }
+void TLTU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLTU\n"); exit(1); }
+void TNE(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TNE\n"); exit(1); }
+void TNEI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TNEI\n"); exit(1); }
+void WAIT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: WAIT\n"); exit(1); }
+void XOR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: XOR\n"); exit(1); }
+void XORI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: XORI\n"); exit(1); }
 
