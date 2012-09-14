@@ -3,14 +3,74 @@
 #include "cpu.h"
 #include "autogen/opcodes.h"
 
-void a(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: a\n"); exit(1); }
-void ADD(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ADD\n"); exit(1); }
-void ADDI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ADDI\n"); exit(1); }
-void ADDIU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ADDIU\n"); exit(1); }
-void ADDU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ADDU\n"); exit(1); }
-void AND(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: AND\n"); exit(1); }
-void ANDI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ANDI\n"); exit(1); }
-void b(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: b\n"); exit(1); }
+
+//extra brackets make these macros play nice.
+#define getRs(op) (((op)&0x3e00000) >> 21)
+
+#define getRt(op) (((op)&0x1f0000) >> 16)   
+
+#define getRd(op) (((op)&0xf800) >> 11)
+
+#define getImm(op) ((op)&0x0000ffff)
+
+#define getSHAMT(op) (((op)&0x7c0) >> 6)
+
+#define getFunct(op) ((op)&0x3f)
+
+
+void a(cpu* _cpu, int op) {
+    fputs("ERROR bad opcode\n",stderr);
+}
+
+void ADD(cpu* _cpu, int op) {
+    //We are ignoring overflow traps for now
+    ADDU(_cpu,op);
+}
+
+void ADDI(cpu* _cpu, int op) {
+    //We are ignoring overflow traps for now
+    ADDIU(_cpu,op);
+}
+
+void ADDIU(cpu* _cpu, int op) {
+    uint16_t imm = (uint16_t)getImm(op);
+    _cpu->GPRs[getRt(op)] = (uint32_t)( (int32_t)_cpu->GPRs[getRs(op)] + (int32_t)((int16_t)imm)); 
+}
+
+void ADDU(cpu* _cpu, int op) { 
+    _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] + _cpu->GPRs[getRt(op)];
+}
+
+void AND(cpu* _cpu, int op) { 
+    _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] & _cpu->GPRs[getRt(op)];
+}
+
+void ANDI(cpu* _cpu, int op) {
+    _cpu->GPRs[getRt(op)] = _cpu->GPRs[getRs(op)] & getImm(op); //& only bottom 16 bits
+}
+
+void b(cpu* _cpu, int op) {
+    fputs("ERROR bad opcode\n",stderr);
+}
+
+//TODO delay slot, afvancePC
+//name of branch, condition for branch, L if op does advancePC twice
+#define BXXX(NAME,COND,L) \
+void NAME(cpu* _cpu, int op){\
+	int32_t offset = getSigned18((op&0x0000ffff) * 4);\
+	int32_t rs_val = _cpu->GPRs[getRs(op)];\
+	uint32_t addr = _cpu->PC + offset;\
+	if(COND)\
+	{\
+		_cpu->PC = addr;\
+	}\
+	else\
+	{\
+		if(L){\
+		}\
+	}\
+}
+
 void BEQ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BEQ\n"); exit(1); }
 void BEQL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BEQL\n"); exit(1); }
 void BGEZAL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZAL\n"); exit(1); }
@@ -60,12 +120,66 @@ void MSUBU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MSUBU\n"); 
 void MTC0(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MTC0\n"); exit(1); }
 void MTHI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MTHI\n"); exit(1); }
 void MTLO(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MTLO\n"); exit(1); }
-void MUL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MUL\n"); exit(1); }
-void MULT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MULT\n"); exit(1); }
-void MULTU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MULTU\n"); exit(1); }
-void NOR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: NOR\n"); exit(1); }
-void OR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: OR\n"); exit(1); }
-void ORI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ORI\n"); exit(1); }
+
+void MUL(cpu* _cpu, int op) { 
+    _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] * _cpu->GPRs[getRt(op)];
+}
+
+void MULT(cpu* _cpu, int op) {
+
+    union {
+        int64_t big;
+        uint32_t small[2];
+    } data;
+
+    data.big = (int64_t)_cpu->GPRs[getRs(op)] * (int64_t)_cpu->GPRs[getRt(op)];
+    
+    if(KOMIPS_HOST_ENDIAN  == KOMIPS_LITTLE_ENDIAN){
+        _cpu->MultHI = data.small[1];
+        _cpu->MultLO = data.small[0];
+    
+    } else if (KOMIPS_HOST_ENDIAN  == KOMIPS_BIG_ENDIAN) {
+        _cpu->MultHI = data.small[0];
+        _cpu->MultLO = data.small[1];
+    }
+
+}
+
+void MULTU(cpu* _cpu, int op) {
+
+    union {
+        uint64_t big;
+        uint32_t small[2];
+    } data;
+
+    data.big = (uint64_t)_cpu->GPRs[getRs(op)] * (uint64_t)_cpu->GPRs[getRt(op)];
+    
+    if(KOMIPS_HOST_ENDIAN  == KOMIPS_LITTLE_ENDIAN){
+        _cpu->MultHI = data.small[1];
+        _cpu->MultLO = data.small[0];
+    
+    } else if (KOMIPS_HOST_ENDIAN  == KOMIPS_BIG_ENDIAN) {
+        _cpu->MultHI = data.small[0];
+        _cpu->MultLO = data.small[1];
+    }
+
+}
+
+
+void NOR(cpu* _cpu, int op) {
+    _cpu->GPRs[getRt(op)] = ~(_cpu->GPRs[getRs(op)] | getImm(op)); // ~^ only bottom 16 bits
+}
+
+void OR(cpu* _cpu, int op) { 
+    _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] | _cpu->GPRs[getRt(op)];
+}
+
+void ORI(cpu* _cpu, int op) {
+    _cpu->GPRs[getRt(op)] = _cpu->GPRs[getRs(op)] | getImm(op); //^ only bottom 16 bits
+}
+
+
+
 void PREF(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: PREF\n"); exit(1); }
 void SB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SB\n"); exit(1); }
 void SC(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SC\n"); exit(1); }
@@ -105,6 +219,12 @@ void TLTU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TLTU\n"); ex
 void TNE(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TNE\n"); exit(1); }
 void TNEI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TNEI\n"); exit(1); }
 void WAIT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: WAIT\n"); exit(1); }
-void XOR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: XOR\n"); exit(1); }
-void XORI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: XORI\n"); exit(1); }
+
+void XOR(cpu* _cpu, int op) { 
+    _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] & _cpu->GPRs[getRt(op)];
+}
+
+void XORI(cpu* _cpu, int op) {
+    _cpu->GPRs[getRt(op)] = _cpu->GPRs[getRs(op)] ^ getImm(op); //^ only bottom 16 bits
+}
 
