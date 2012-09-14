@@ -150,12 +150,13 @@ void J(cpu* _cpu, int op) {
 void JR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JR\n"); exit(1); }
 
 void LB(cpu* _cpu, int op) { 
-    _cpu->GPRs[getRt(op)] = getSigned8(readVAByte(_cpu->_mmu, _cpu->GPRs[getRs(op)]+getImm(op)));
+    //printf("LB, addr: %x\n",_cpu->GPRs[getRs(op)]+getSigned16(getImm(op)));
+    _cpu->GPRs[getRt(op)] = getSigned8(readVAByte(_cpu->_mmu, _cpu->GPRs[getRs(op)]+getSigned16(getImm(op))));
     advancePC(_cpu);
 }
 
 void LBU(cpu* _cpu, int op) {
-    printf("LBU, addr: %x.\n",_cpu->GPRs[getRs(op)] + getSigned16(getImm(op)));
+    //printf("LBU addr: %x\n",  _cpu->GPRs[getRs(op)] + getSigned16(getImm(op)));
     _cpu->GPRs[getRt(op)] = readVAByte(_cpu->_mmu, _cpu->GPRs[getRs(op)] + getSigned16(getImm(op)));
     advancePC(_cpu);
 }
