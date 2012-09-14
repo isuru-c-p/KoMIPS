@@ -114,7 +114,7 @@ void JALR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JALR\n"); ex
 
 void J(cpu* _cpu, int op) { 
     DO_DELAY_SLOT(_cpu);
-    _cpu->pc = (_cpu->pc & 0xf0000000) | ((op & 0x3ffffff) << 2);
+    _cpu->pc = ((_cpu->pc-4) & 0xf0000000) | ((op & 0x3ffffff) << 2);
 }
 
 void JR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JR\n"); exit(1); }
