@@ -85,7 +85,9 @@ void b(cpu* _cpu, int op) {
 
 //TODO only eval offset etc... if branch is taken
 
-#define BXXX(NAME,COND,L,LINK) \
+
+//TODO this is broken in some situations, needs fixing
+#define BXXX(NAME,COND,LIKELY,LINK) \
 void NAME(cpu* _cpu, int op){\
 	uint32_t offset = signExtend18((op&0x0000ffff) * 4);\
 	uint32_t addr = _cpu->pc + offset;\
@@ -97,7 +99,7 @@ void NAME(cpu* _cpu, int op){\
 	}\
 	else\
 	{\
-		if(L){\
+		if(LIKELY){\
 		    advancePC(_cpu);\
 		}\
 	}\
