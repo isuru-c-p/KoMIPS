@@ -39,6 +39,16 @@ void writePAByte(mmu* _mmu, uint32_t p_addr, uint8_t byte)
 
 void writeVAByte(mmu* _mmu, uint32_t v_addr, uint8_t byte)
 {
+    if((v_addr >= UART_BASE) && (v_addr <= UART_END))
+    {
+        //printf("UART write, addr: 0x%x (offset: 0x%x)\n", v_addr, (v_addr - UART_BASE));
+        if(v_addr == UART_RX_TX)
+        {
+            printf("%c",byte);        
+        }
+        return;
+    } 
+
     uint32_t p_addr = _mmu->VAtoPA(_mmu, v_addr);
     _mmu->writePAByte(_mmu, p_addr, byte);
 }
@@ -57,6 +67,17 @@ uint8_t readPAByte(mmu* _mmu, uint32_t p_addr)
 
 uint8_t readVAByte(mmu* _mmu, uint32_t v_addr)
 {
+    if((v_addr >= UART_BASE) && (v_addr <= UART_END))
+    {
+        //printf("UART read, addr: 0x%x (offset: 0x%x)\n", v_addr, (v_addr - UART_BASE));
+        if(v_addr == UART_LSTAT)
+        {
+            // THRE & TEMT are set
+            return  (1 << 5) | (1 << 6); 
+        } 
+        return  (1 << 5) | (1 << 6); 
+    }
+
     uint32_t p_addr = _mmu->VAtoPA(_mmu, v_addr);
     return readPAByte(_mmu, p_addr);
 }
