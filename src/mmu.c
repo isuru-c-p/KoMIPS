@@ -29,11 +29,11 @@ void writePAByte(mmu* _mmu, uint32_t p_addr, uint8_t byte)
 {
 	if(KOMIPS_HOST_ENDIAN  == KOMIPS_LITTLE_ENDIAN)
 	{
-		_mmu->mem[p_addr/4].bytes[3-p_addr%4] = byte; 
+		_mmu->mem[p_addr/4].bytes[p_addr%4] = byte; 
 	}
 	else if(KOMIPS_HOST_ENDIAN  == KOMIPS_BIG_ENDIAN)
 	{
-		_mmu->mem[p_addr/4].bytes[p_addr%4] = byte; 
+		_mmu->mem[p_addr/4].bytes[3-p_addr%4] = byte; 
 	}
 }
 
@@ -84,96 +84,104 @@ void loadSREC(mmu* _mmu, char* filename)
 {
     FILE *fp;
     fp = fopen(filename, "r");
-    char* nextLineChar;
-    size_t len;
-    uint32_t entryPoint = 0;
 
     if(fp == NULL)
     {
         printf("Error, opening %s for reading.\n", filename);
-        exit(1); 
+        exit(1);
     }
 
-    while((nextLineChar = fgetln(fp,&len)))
+    typedef enum recordReadStateType {
+        RECORD_HEADER = 0,
+        RECORD_TYPE = 1,
+        RECORD_LEN = 2,
+        RECORD_ADDR = 3,
+        RECORD_DATA = 4,
+        RECORD_END = 5
+    } recordReadStateType; 
+
+    recordReadStateType recordReadState = RECORD_HEADER;
+
+    int charCount = 0;
+    char recordType = '\0';
+    int recordLength = 0;
+    int addrLength = 0;
+    int dataLength = 0;
+    const int addrLengthTable[10] = {2,2,3,4,2,4,3,4,4,4};
+    uint32_t address = 0;
+    
+
+    while(!feof(fp))
     {
-        char t = nextLineChar[1];
-        char s_count[3] = {'\0'};
-        char s_addr[9] = {'\0'};
-        uint32_t addr = 0;
-        int count = 0;
-        int dataEnd = len - 2;
-        int dataLen = dataEnd - 8;
-        char* data = (char*)malloc(dataLen*sizeof(char));
-        memset((void*)data,'\0',dataLen*sizeof(char));
-        
+        int dataPtr = 0;
+        char s_Length[3] = {'\0'};
+        char* s_address;
+        char* s_data;
+        char s_byte[3] = {'\0'}; 
+        uint8_t byte = 0;
 
-        if(nextLineChar[0] != 'S')
+        switch(recordReadState)
         {
-            printf("Invalid SREC record!\n");
-            exit(1);
-        }    
-
-        strncpy(s_count,(nextLineChar+2),2); 
-        sscanf(s_count,"%x",&count);
-
-        switch(t)
-        {
-            case '0':
+            case RECORD_HEADER:
+                fgetc(fp);
                 break;
 
-            case '1':
-                strncpy(s_addr,(nextLineChar+4),4);
-                strncpy(data,(nextLineChar+8),dataEnd-8);
+            case RECORD_TYPE:
+                recordType = fgetc(fp);
+                addrLength = addrLengthTable[((uint8_t)recordType)-((uint8_t)'0')];
+                //printf("recordType: %c, addrLength: %d\n", recordType, addrLength);
                 break;
 
-            case '2':
-                strncpy(s_addr,(nextLineChar+4),6);
-                strncpy(data,(nextLineChar+10),dataEnd-10);
+            case RECORD_LEN:
+                fread(s_Length, 1, 2, fp);  
+                sscanf(s_Length, "%x", &recordLength); 
                 break;
 
-            case '3':
-                strncpy(s_addr,(nextLineChar+4),8);
-                strncpy(data,(nextLineChar+12),dataEnd-12);
+            case RECORD_ADDR:
+                s_address = (char*)malloc((addrLength*2+1)*sizeof(char));
+                s_address[addrLength*2] = '\0';
+                fread(s_address, 1, addrLength*2, fp);
+                sscanf(s_address, "%x", &address);
+                //printf("address: %x, length: %d\n", address, addrLength*2);
+                free(s_address); 
                 break;
 
-            case '7':
-            case '8':
-            case '9':
-                count = count*2 - 2;
-                strncpy(s_addr,(nextLineChar+4),count);
-                sscanf(s_addr,"%x",&_mmu->entryPoint);  
-                break; 
+            case RECORD_DATA:
+                dataLength = recordLength - addrLength - 1; 
+                s_data = (char*)malloc((dataLength*2+1)*sizeof(char));
+                s_data[dataLength*2] = '\0';
 
-            default:
-                printf("ERROR, unknown SREC record type: %c\n", t);
-                exit(1);
-                break; 
-        }
-       
-        if((t == '1') || (t == '2') || (t == '3'))
-        {
-            //printf("Record: %c\n", t);
-            int dataLen = strlen(data);
-            if((dataLen % 2) != 0)
-            {
-                printf("Invalid SREC record length: %d\n", dataLen);
-                exit(1);
-            }
+                switch(recordType)
+                {
+                    case '0':
+                        fseek(fp, dataLength*2, SEEK_CUR);
+                        break; 
 
-            sscanf(s_addr,"%x",&addr);
-            //printf("addr: %x, s_addr: %s\n", addr, s_addr);
-            for(int i = 0; i < dataLen; i+=2)
-            {
-                char s_dataByte[3] = {'\0'};
-                uint8_t dataByte = 0;
-                strncpy(s_dataByte,(nextLineChar+i),2);
-                sscanf(s_dataByte,"%x",&dataByte);
+                    case '7':
+                    case '8':
+                    case '9':
+                         _mmu->entryPoint = address;
+                         fseek(fp, 2, SEEK_CUR);
+                         break;
                 
-                _mmu->writeVAByte(_mmu, addr+(i/2),dataByte);
-            }
-        } 
+                    default:
+                        for(dataPtr = 0; dataPtr < dataLength; dataPtr++)
+                        {
+                            fread(s_byte, 1, 2, fp); 
+                            sscanf(s_byte, "%x", &byte);
+                            _mmu->writeVAByte(_mmu, address+dataPtr,byte);
+                        }           
+                }
 
-        
-        free(data); 
+                free(s_data);
+                break;
+
+            case RECORD_END:
+                // skip checksum + new line char
+                fseek(fp, 3, SEEK_CUR);
+                break;
+        }
+    
+        recordReadState = (recordReadState+1) % 6;   
     }
 }
