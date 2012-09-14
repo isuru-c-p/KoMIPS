@@ -17,6 +17,17 @@
 
 #define getFunct(op) ((op)&0x3f)
 
+static uint32_t signExtend18(uint32_t value){
+	value = value & 0x0003ffff;
+	if (value&0x00020000 > 0 )
+	    return value | 0xfffc0000;
+	else
+        return value;
+}
+
+
+
+
 
 void a(cpu* _cpu, int op) {
     fputs("ERROR bad opcode\n",stderr);
@@ -59,48 +70,57 @@ void b(cpu* _cpu, int op) {
     fputs("ERROR bad opcode\n",stderr);
 }
 
+
+#define DO_DELAY_SLOT(CPU) \
+    do{ \
+    advancePC(CPU); \
+    CPU->delay_slot = 1; \
+    CPU->step(CPU); \
+    CPU->delay_slot = 0;\
+    } while(0)
+
+
 //TODO delay slot, afvancePC
 //name of branch, condition for branch, L if op does advancePC twice
-#define BXXX(NAME,COND,L) \
+
+//TODO only eval offset etc... if branch is taken
+
+#define BXXX(NAME,COND,L,LINK) \
 void NAME(cpu* _cpu, int op){\
-	int32_t offset = getSigned18((op&0x0000ffff) * 4);\
-	int32_t rs_val = _cpu->GPRs[getRs(op)];\
-	uint32_t addr = _cpu->PC + offset;\
+	uint32_t offset = signExtend18((op&0x0000ffff) * 4);\
+	uint32_t addr = _cpu->pc + offset;\
+	DO_DELAY_SLOT(_cpu); \
+	if (LINK){_cpu->GPRs[31] = _cpu->pc;}\
 	if(COND)\
 	{\
-		_cpu->PC = addr;\
+		_cpu->pc = addr;\
 	}\
 	else\
 	{\
 		if(L){\
+		    advancePC(_cpu);\
 		}\
 	}\
 }
 
-#define DO_DELAY_SLOT(CPU) \
-    advancePC(CPU); \
-    CPU->delay_slot = 1; \
-    CPU->step(CPU); \
-    CPU->delay_slot = 0;
 
+BXXX(BEQ,_cpu->GPRs[getRs(op)] == _cpu->GPRs[getRt(op)],0,0);
+BXXX(BEQL,_cpu->GPRs[getRs(op)] == _cpu->GPRs[getRt(op)],1,0);
+BXXX(BGEZAL,(int32_t)_cpu->GPRs[getRs(op)] >= 0 ,0,1);
+BXXX(BGEZALL,(int32_t)_cpu->GPRs[getRs(op)] >= 0,1,1);
+BXXX(BGEZ,(int32_t)_cpu->GPRs[getRs(op)] == 0 ,0,0);
+BXXX(BGEZL,(int32_t)_cpu->GPRs[getRs(op)] == 0,1,0);
+BXXX(BGTZ,(int32_t)_cpu->GPRs[getRs(op)]  > 0 ,0,0);
+BXXX(BGTZL,(int32_t)_cpu->GPRs[getRs(op)] > 0,1,0);
+BXXX(BLEZ,(int32_t)_cpu->GPRs[getRs(op)]  <= 0 ,0,0);
+BXXX(BLEZL,(int32_t)_cpu->GPRs[getRs(op)] <= 0,1,0);
+BXXX(BLTZAL,(int32_t)_cpu->GPRs[getRs(op)]  < 0 ,0,1);
+BXXX(BLTZALL,(int32_t)_cpu->GPRs[getRs(op)] < 0,1,1);
+BXXX(BLTZ,(int32_t)_cpu->GPRs[getRs(op)]  < 0 ,0,0);
+BXXX(BLTZL,(int32_t)_cpu->GPRs[getRs(op)] < 0,1,0);
+BXXX(BNE,_cpu->GPRs[getRs(op)] != _cpu->GPRs[getRt(op)],0,0);
+BXXX(BNEL,_cpu->GPRs[getRs(op)] != _cpu->GPRs[getRt(op)],1,0);
 
-
-void BEQ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BEQ\n"); exit(1); }
-void BEQL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BEQL\n"); exit(1); }
-void BGEZAL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZAL\n"); exit(1); }
-void BGEZALL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZALL\n"); exit(1); }
-void BGEZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZ\n"); exit(1); }
-void BGEZL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZL\n"); exit(1); }
-void BGTZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGTZ\n"); exit(1); }
-void BGTZL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGTZL\n"); exit(1); }
-void BLEZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLEZ\n"); exit(1); }
-void BLEZL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLEZL\n"); exit(1); }
-void BLTZAL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLTZAL\n"); exit(1); }
-void BLTZALL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLTZALL\n"); exit(1); }
-void BLTZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLTZ\n"); exit(1); }
-void BLTZL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BLTZL\n"); exit(1); }
-void BNE(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BNE\n"); exit(1); }
-void BNEL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BNEL\n"); exit(1); }
 void BREAK(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BREAK\n"); exit(1); }
 void CACHE(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: CACHE\n"); exit(1); }
 void CLO(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: CLO\n"); exit(1); }
