@@ -90,7 +90,7 @@ void NAME(cpu* _cpu, int op){\
 	uint32_t offset = signExtend18((op&0x0000ffff) * 4);\
 	uint32_t addr = _cpu->pc + offset;\
 	DO_DELAY_SLOT(_cpu); \
-	if (LINK){_cpu->GPRs[31] = _cpu->pc;}\
+	if (LINK){_cpu->GPRs[31] = _cpu->pc + 4;}\
 	if(COND)\
 	{\
 		_cpu->pc = addr;\
