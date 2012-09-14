@@ -15,7 +15,10 @@ void step(cpu* _cpu)
 
 void advancePC(cpu* _cpu)
 {
-    _cpu->pc += 4; 
+    if(_cpu->delay_slot != 1)
+    {
+        _cpu->pc += 4; 
+    }
 }
 
 void initCPU(cpu* _cpu)

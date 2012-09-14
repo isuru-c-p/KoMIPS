@@ -14,6 +14,7 @@ typedef union _fpreg {
 typedef struct _cpu {
 	uint32_t GPRs[32];
 	fpreg FGRs[32];
+    uint8_t delay_slot;
 	uint8_t mode;
 	uint64_t pc;
 	uint64_t MultHI;

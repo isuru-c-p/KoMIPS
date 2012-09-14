@@ -77,6 +77,14 @@ void NAME(cpu* _cpu, int op){\
 	}\
 }
 
+#define DO_DELAY_SLOT(CPU) \
+    advancePC(CPU); \
+    CPU->delay_slot = 1; \
+    CPU->step(CPU); \
+    CPU->delay_slot = 0;
+
+
+
 void BEQ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BEQ\n"); exit(1); }
 void BEQL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BEQL\n"); exit(1); }
 void BGEZAL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: BGEZAL\n"); exit(1); }
@@ -103,7 +111,12 @@ void DIVU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: DIVU\n"); ex
 void ERET(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ERET\n"); exit(1); }
 void JAL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JAL\n"); exit(1); }
 void JALR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JALR\n"); exit(1); }
-void J(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: J\n"); exit(1); }
+
+void J(cpu* _cpu, int op) { 
+    DO_DELAY_SLOT(_cpu);
+    _cpu->pc = (_cpu->pc & 0xf0000000) | ((op & 0x3ffffff) << 2);
+}
+
 void JR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JR\n"); exit(1); }
 void LB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LB\n"); exit(1); }
 void LBU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LBU\n"); exit(1); }
