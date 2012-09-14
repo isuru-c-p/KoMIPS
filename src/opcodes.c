@@ -145,7 +145,11 @@ void J(cpu* _cpu, int op) {
     _cpu->pc = ((_cpu->pc-4) & 0xf0000000) | ((op & 0x3ffffff) << 2);
 }
 
-void JR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JR\n"); exit(1); }
+void JR(cpu* _cpu, int op) { 
+    uint32_t target = _cpu->GPRs[getRs(op)];
+    DO_DELAY_SLOT(_cpu);
+    _cpu->pc = target;
+}
 
 void LB(cpu* _cpu, int op) { 
     //printf("LB, addr: %x\n",_cpu->GPRs[getRs(op)]+getSigned16(getImm(op)));
