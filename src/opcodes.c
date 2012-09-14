@@ -112,7 +112,12 @@ void DERET(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: DERET\n"); 
 void DIV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: DIV\n"); exit(1); }
 void DIVU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: DIVU\n"); exit(1); }
 void ERET(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: ERET\n"); exit(1); }
-void JAL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JAL\n"); exit(1); }
+
+void JAL(cpu* _cpu, int op) { 
+    _cpu->GPRs[31] = _cpu->pc+8;  
+    J(_cpu,op);
+}
+
 void JALR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JALR\n"); exit(1); }
 
 void J(cpu* _cpu, int op) { 
