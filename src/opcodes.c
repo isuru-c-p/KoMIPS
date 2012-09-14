@@ -25,28 +25,34 @@ void a(cpu* _cpu, int op) {
 void ADD(cpu* _cpu, int op) {
     //We are ignoring overflow traps for now
     ADDU(_cpu,op);
+    advancePC(_cpu);
 }
 
 void ADDI(cpu* _cpu, int op) {
     //We are ignoring overflow traps for now
     ADDIU(_cpu,op);
+    advancePC(_cpu);
 }
 
 void ADDIU(cpu* _cpu, int op) {
     uint16_t imm = (uint16_t)getImm(op);
     _cpu->GPRs[getRt(op)] = (uint32_t)( (int32_t)_cpu->GPRs[getRs(op)] + (int32_t)((int16_t)imm)); 
+    advancePC(_cpu);
 }
 
 void ADDU(cpu* _cpu, int op) { 
     _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] + _cpu->GPRs[getRt(op)];
+    advancePC(_cpu);
 }
 
 void AND(cpu* _cpu, int op) { 
     _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] & _cpu->GPRs[getRt(op)];
+    advancePC(_cpu);
 }
 
 void ANDI(cpu* _cpu, int op) {
     _cpu->GPRs[getRt(op)] = _cpu->GPRs[getRs(op)] & getImm(op); //& only bottom 16 bits
+    advancePC(_cpu);
 }
 
 void b(cpu* _cpu, int op) {
@@ -104,7 +110,12 @@ void LBU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LBU\n"); exit
 void LH(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LH\n"); exit(1); }
 void LHU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LHU\n"); exit(1); }
 void LL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LL\n"); exit(1); }
-void LUI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LUI\n"); exit(1); }
+
+void LUI(cpu* _cpu, int op) { 
+     _cpu->GPRs[getRt(op)] = getImm(op);
+     advancePC(_cpu);
+}
+
 void LW(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LW\n"); exit(1); }
 void LWL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LWL\n"); exit(1); }
 void LWR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LWR\n"); exit(1); }
@@ -123,6 +134,7 @@ void MTLO(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MTLO\n"); ex
 
 void MUL(cpu* _cpu, int op) { 
     _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] * _cpu->GPRs[getRt(op)];
+    advancePC(_cpu);
 }
 
 void MULT(cpu* _cpu, int op) {
@@ -143,6 +155,7 @@ void MULT(cpu* _cpu, int op) {
         _cpu->MultLO = data.small[1];
     }
 
+    advancePC(_cpu);
 }
 
 void MULTU(cpu* _cpu, int op) {
@@ -163,22 +176,24 @@ void MULTU(cpu* _cpu, int op) {
         _cpu->MultLO = data.small[1];
     }
 
+    advancePC(_cpu);
 }
 
 
 void NOR(cpu* _cpu, int op) {
     _cpu->GPRs[getRt(op)] = ~(_cpu->GPRs[getRs(op)] | getImm(op)); // ~^ only bottom 16 bits
+    advancePC(_cpu);
 }
 
 void OR(cpu* _cpu, int op) { 
     _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] | _cpu->GPRs[getRt(op)];
+    advancePC(_cpu);
 }
 
 void ORI(cpu* _cpu, int op) {
     _cpu->GPRs[getRt(op)] = _cpu->GPRs[getRs(op)] | getImm(op); //^ only bottom 16 bits
+    advancePC(_cpu);
 }
-
-
 
 void PREF(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: PREF\n"); exit(1); }
 void SB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SB\n"); exit(1); }
@@ -222,9 +237,11 @@ void WAIT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: WAIT\n"); ex
 
 void XOR(cpu* _cpu, int op) { 
     _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] & _cpu->GPRs[getRt(op)];
+    advancePC(_cpu);
 }
 
 void XORI(cpu* _cpu, int op) {
     _cpu->GPRs[getRt(op)] = _cpu->GPRs[getRs(op)] ^ getImm(op); //^ only bottom 16 bits
+    advancePC(_cpu);
 }
 
