@@ -17,6 +17,10 @@
 
 #define getFunct(op) ((op)&0x3f)
 
+#define getSigned16(OP) \
+    ((int32_t)((int16_t)(OP)))
+    
+//return the unsigned word containing the sign extended 18 bit value
 static uint32_t signExtend18(uint32_t value){
 	value = value & 0x0003ffff;
 	if (value&0x00020000 > 0 )
@@ -24,10 +28,6 @@ static uint32_t signExtend18(uint32_t value){
 	else
         return value;
 }
-
-
-
-
 
 void a(cpu* _cpu, int op) {
     fputs("ERROR bad opcode\n",stderr);
@@ -134,7 +134,7 @@ void JALR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JALR\n"); ex
 
 void J(cpu* _cpu, int op) { 
     DO_DELAY_SLOT(_cpu);
-    _cpu->pc = (_cpu->pc & 0xf0000000) | ((op & 0x3ffffff) << 2);
+    _cpu->pc = ((_cpu->pc-4) & 0xf0000000) | ((op & 0x3ffffff) << 2);
 }
 
 void JR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JR\n"); exit(1); }
@@ -145,7 +145,7 @@ void LHU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LHU\n"); exit
 void LL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LL\n"); exit(1); }
 
 void LUI(cpu* _cpu, int op) { 
-     _cpu->GPRs[getRt(op)] = getImm(op);
+     _cpu->GPRs[getRt(op)] = (getImm(op) << 16);
      advancePC(_cpu);
 }
 
@@ -245,7 +245,12 @@ void SRL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRL\n"); exit
 void SRLV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRLV\n"); exit(1); }
 void SUB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SUB\n"); exit(1); }
 void SUBU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SUBU\n"); exit(1); }
-void SW(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SW\n"); exit(1); }
+
+void SW(cpu* _cpu, int op) { 
+    _cpu->_mmu->writeVAWordAligned(_cpu->_mmu, _cpu->GPRs[getRs(op)] + getSigned16(getImm(op)), _cpu->GPRs[getRt(op)]);
+    advancePC(_cpu);
+}
+
 void SWL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SWL\n"); exit(1); }
 void SWR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SWR\n"); exit(1); }
 void SYNC(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SYNC\n"); exit(1); }
