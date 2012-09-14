@@ -43,6 +43,24 @@ void writeVAByte(mmu* _mmu, uint32_t v_addr, uint8_t byte)
     _mmu->writePAByte(_mmu, p_addr, byte);
 }
 
+uint8_t readPAByte(mmu* _mmu, uint32_t p_addr)
+{
+ 	if(KOMIPS_HOST_ENDIAN  == KOMIPS_LITTLE_ENDIAN)
+	{
+		return _mmu->mem[p_addr/4].bytes[p_addr%4];
+	}
+	else if(KOMIPS_HOST_ENDIAN  == KOMIPS_BIG_ENDIAN)
+	{
+		return _mmu->mem[p_addr/4].bytes[3-p_addr%4];
+	}   
+}
+
+uint8_t readVAByte(mmu* _mmu, uint32_t v_addr)
+{
+    uint32_t p_addr = _mmu->VAtoPA(_mmu, v_addr);
+    return readPAByte(_mmu, p_addr);
+}
+
 void writePAWordAligned(mmu* _mmu, uint32_t p_addr, uint32_t word)
 {
     _mmu->mem[p_addr/4].word = word;

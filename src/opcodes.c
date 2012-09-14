@@ -17,13 +17,16 @@
 
 #define getFunct(op) ((op)&0x3f)
 
-#define getSigned16(OP) \
-    ((int32_t)((int16_t)(OP)))
+#define getSigned16(IMM) \
+    ((int32_t)((int16_t)(IMM)))
+
+#define getSigned8(IMM) \
+    ((int32_t)((int8_t)(IMM)))
     
 //return the unsigned word containing the sign extended 18 bit value
 static uint32_t signExtend18(uint32_t value){
 	value = value & 0x0003ffff;
-	if (value&0x00020000 > 0 )
+	if ((value&0x00020000) > 0 )
 	    return value | 0xfffc0000;
 	else
         return value;
@@ -143,8 +146,18 @@ void J(cpu* _cpu, int op) {
 }
 
 void JR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: JR\n"); exit(1); }
-void LB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LB\n"); exit(1); }
-void LBU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LBU\n"); exit(1); }
+
+void LB(cpu* _cpu, int op) { 
+    _cpu->GPRs[getRt(op)] = getSigned8(readVAByte(_cpu->_mmu, _cpu->GPRs[getRs(op)]+getImm(op)));
+    advancePC(_cpu);
+}
+
+void LBU(cpu* _cpu, int op) {
+    printf("LBU, addr: %x.\n",_cpu->GPRs[getRs(op)] + getSigned16(getImm(op)));
+    _cpu->GPRs[getRt(op)] = readVAByte(_cpu->_mmu, _cpu->GPRs[getRs(op)] + getSigned16(getImm(op)));
+    advancePC(_cpu);
+}
+
 void LH(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LH\n"); exit(1); }
 void LHU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LHU\n"); exit(1); }
 void LL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LL\n"); exit(1); }
@@ -238,7 +251,12 @@ void SB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SB\n"); exit(1
 void SC(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SC\n"); exit(1); }
 void SDBBP(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SDBBP\n"); exit(1); }
 void SH(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SH\n"); exit(1); }
-void SLL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLL\n"); exit(1); }
+
+void SLL(cpu* _cpu, int op) {
+    _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRt(op)] << getSHAMT(op);
+    advancePC(_cpu);
+}
+
 void SLLV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLLV\n"); exit(1); }
 void SLT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLT\n"); exit(1); }
 void SLTI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLTI\n"); exit(1); }
