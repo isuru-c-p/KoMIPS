@@ -119,108 +119,137 @@ void initMMU(mmu* _mmu)
     _mmu->mem = (memword*)malloc(MEM_SIZE*sizeof(memword));
 }
 
-void loadSREC(mmu* _mmu, char* filename)
-{
-    FILE *fp;
-    fp = fopen(filename, "r");
 
-    if(fp == NULL)
-    {
-        printf("Error, opening %s for reading.\n", filename);
-        exit(1);
+static int isHexChar(char c){
+    if(c >= '0' && c <= '9')
+        return 1;
+    if(c >= 'a' && c <= 'f')
+        return 1;
+    if(c >= 'A' && c <= 'F')
+        return 1;
+    return 0;
+}
+
+static int srecReadType(FILE * f){
+    int c = fgetc(f);
+    if(c == EOF){
+        return -1; // 0 type srecord will trigger a skip, which will terminate
     }
+    if(c != 'S'){
+        return -2;
+    }
+    c = fgetc(f) - '0';
+    if(c >= 0 && c <= 9)
+        return c;
+    return -2;
+}
 
-    typedef enum recordReadStateType {
-        RECORD_HEADER = 0,
-        RECORD_TYPE = 1,
-        RECORD_LEN = 2,
-        RECORD_ADDR = 3,
-        RECORD_DATA = 4,
-        RECORD_END = 5
-    } recordReadStateType; 
-
-    recordReadStateType recordReadState = RECORD_HEADER;
-
-    int charCount = 0;
-    char recordType = '\0';
-    int recordLength = 0;
-    int addrLength = 0;
-    int dataLength = 0;
-    const int addrLengthTable[10] = {2,2,3,4,2,4,3,4,4,4};
-    uint32_t address = 0;
+static int srecReadByte(FILE * f, uint8_t * count){
+    char chars[3];
+    int i;
     
+    for(i = 0 ; i < 2; i++){
+        chars[i] = fgetc(f);
+        if(!isHexChar(chars[i]))
+            return 1;
+    }
+    chars[2] = 0;
+    *count = (uint8_t) strtoul(&chars[0],0,16);
+    return 0;
+}
 
-    while(!feof(fp))
-    {
-        int dataPtr = 0;
-        char s_Length[3] = {'\0'};
-        char* s_address;
-        char* s_data;
-        char s_byte[3] = {'\0'}; 
-        uint8_t byte = 0;
+static int srecReadAddress(FILE * f, uint32_t * addr){
+    char chars[9];
+    int i;
+    
+    for(i = 0 ; i < 8; i++){
+        chars[i] = fgetc(f);
+        if(!isHexChar(chars[i]))
+            return 1;
+    }
+    chars[9] = 0;
+    
+    *addr = strtoul(&chars[0],0,16); 
+    return 0;
+}
 
-        switch(recordReadState)
-        {
-            case RECORD_HEADER:
-                fgetc(fp);
-                break;
-
-            case RECORD_TYPE:
-                recordType = fgetc(fp);
-                addrLength = addrLengthTable[((uint8_t)recordType)-((uint8_t)'0')];
-                //printf("recordType: %c, addrLength: %d\n", recordType, addrLength);
-                break;
-
-            case RECORD_LEN:
-                fread(s_Length, 1, 2, fp);  
-                sscanf(s_Length, "%x", &recordLength); 
-                break;
-
-            case RECORD_ADDR:
-                s_address = (char*)malloc((addrLength*2+1)*sizeof(char));
-                s_address[addrLength*2] = '\0';
-                fread(s_address, 1, addrLength*2, fp);
-                sscanf(s_address, "%x", &address);
-                //printf("address: %x, length: %d\n", address, addrLength*2);
-                free(s_address); 
-                break;
-
-            case RECORD_DATA:
-                dataLength = recordLength - addrLength - 1; 
-                s_data = (char*)malloc((dataLength*2+1)*sizeof(char));
-                s_data[dataLength*2] = '\0';
-
-                switch(recordType)
-                {
-                    case '0':
-                        fseek(fp, dataLength*2, SEEK_CUR);
-                        break; 
-
-                    case '7':
-                    case '8':
-                    case '9':
-                         _mmu->entryPoint = address;
-                         fseek(fp, 2, SEEK_CUR);
-                         break;
-                
-                    default:
-                        for(dataPtr = 0; dataPtr < dataLength; dataPtr++)
-                        {
-                            fread(s_byte, 1, 2, fp); 
-                            sscanf(s_byte, "%x", &byte);
-                            _mmu->writeVAByte(_mmu, address+dataPtr,byte);
-                        }           
-                }
-
-                free(s_data);
-                break;
-
-            case RECORD_END:
-                // skip checksum + new line char
-                fseek(fp, 3, SEEK_CUR);
-                break;
+static void srecSkipToNextLine(FILE * f){
+    while(1){
+        int c = fgetc(f);
+        if(c == EOF || c == '\n'){
+            break;
         }
-    
-        recordReadState = (recordReadState+1) % 6;   
     }
 }
+
+static int srecLoadData(FILE * f,mmu* _mmu,uint32_t addr,uint32_t count){
+    
+    uint8_t b;
+    while(count--){
+        if(srecReadByte(f,&b)){
+            return 1;
+        }
+        
+        _mmu->writeVAByte(_mmu,addr++,b); //TODO check for exception/mapped address
+    }
+    return 0;
+}
+
+int loadSREC(mmu* _mmu, char* filename)
+{
+
+    uint32_t addr;
+    uint8_t count;
+
+    FILE * f = fopen(filename,"r");
+    if(!f){
+        fputs("srecLoader: failed to open file.\n",stderr);
+        return 1;
+    }
+    
+    while(!feof(f)){
+        switch(srecReadType(f)){
+            
+            case -1:
+                //EOF
+                break;
+            case 0:
+                srecSkipToNextLine(f);
+                break;
+            case 3:
+                if(srecReadByte(f,&count)){
+                    fputs("srecLoader: failed to parse bytecount.\n",stderr);
+                    return 1;
+                }
+                if(srecReadAddress(f,&addr)){
+                    fputs("srecLoader: failed to parse address.\n",stderr);
+                    return 1;
+                }
+                if(srecLoadData(f,_mmu,addr,count-5)){
+                    fputs("srecLoader: failed to load data.\n",stderr);
+                    return 1;
+                }
+                srecSkipToNextLine(f);
+                break;
+            case 7:
+                if(srecReadByte(f,&count)){
+                    fputs("srecLoader: failed to parse bytecount.\n",stderr);
+                    return 1;
+                }
+                if(srecReadAddress(f,&addr)){
+                    fputs("srecLoader: failed to parse address.\n",stderr);
+                    return 1;
+                }
+                _mmu->entryPoint = addr;
+                srecSkipToNextLine(f); 
+                break;
+
+            default:
+                fputs("Bad/Unsupported srec type\n",stderr);
+                return 1;
+        }
+    }
+    
+    return 0;
+}
+

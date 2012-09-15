@@ -14,7 +14,10 @@ int main(int argc, char** argv)
 
     cpu* _cpu = (cpu*)malloc(sizeof(cpu));
     initCPU(_cpu);
-    loadSREC(_cpu->_mmu, argv[1]); 
+    if(loadSREC(_cpu->_mmu, argv[1])){
+        fputs("failed to load srec...\n",stderr);
+        return 1;
+    }
     _cpu->pc = 0;
     _cpu->pc = _cpu->_mmu->entryPoint;
     printf("Finished loading SREC, running from entryPoint: %llx\n", _cpu->pc);

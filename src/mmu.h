@@ -53,7 +53,7 @@ typedef struct _mmu {
 //void writePAByte(mmu* _mmu, uint32_t p_addr, uint8_t byte);
 //void writeVAByte(mmu* _mmu, uint32_t v_addr, uint8_t byte);
 void initMMU(mmu* _mmu);
-void loadSREC(mmu* _mmu, char* filename);
+int loadSREC(mmu* _mmu, char* filename);
 
 uint8_t readPAByte(mmu* _mmu, uint32_t p_addr);
 uint8_t readVAByte(mmu* _mmu, uint32_t v_addr);
