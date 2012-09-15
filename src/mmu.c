@@ -167,7 +167,7 @@ static int srecReadAddress(FILE * f, uint32_t * addr){
         if(!isHexChar(chars[i]))
             return 1;
     }
-    chars[9] = 0;
+    chars[8] = 0;
     
     *addr = strtoul(&chars[0],0,16); 
     return 0;
