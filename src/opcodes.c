@@ -52,8 +52,10 @@ void ADDIU(cpu* _cpu, int op) {
     advancePC(_cpu);
 }
 
-void ADDU(cpu* _cpu, int op) { 
+void ADDU(cpu* _cpu, int op) {
+    //printf("ADD %d + %d",_cpu->GPRs[getRs(op)] , _cpu->GPRs[getRt(op)]);
     _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] + _cpu->GPRs[getRt(op)];
+    //printf("= %d\n",_cpu->GPRs[getRd(op)]);
     advancePC(_cpu);
 }
 
@@ -92,15 +94,17 @@ void b(cpu* _cpu, int op) {
 void NAME(cpu* _cpu, int op){\
 	uint32_t offset = signExtend18((op&0x0000ffff) * 4);\
 	uint32_t addr = _cpu->pc + 4 + offset;\
-	DO_DELAY_SLOT(_cpu); \
+	if(!LIKELY) { DO_DELAY_SLOT(_cpu); } \
 	if (LINK){_cpu->GPRs[31] = _cpu->pc + 4;}\
 	if(COND)\
 	{\
+	    if(LIKELY) { DO_DELAY_SLOT(_cpu); } \
 		_cpu->pc = addr;\
 	}\
 	else\
 	{\
 		if(LIKELY){\
+		    advancePC(_cpu);\
 		    advancePC(_cpu);\
 		}\
 	}\
@@ -247,7 +251,7 @@ void OR(cpu* _cpu, int op) {
 }
 
 void ORI(cpu* _cpu, int op) {
-    _cpu->GPRs[getRt(op)] = _cpu->GPRs[getRs(op)] | getImm(op); //^ only bottom 16 bits
+    _cpu->GPRs[getRt(op)] = _cpu->GPRs[getRs(op)] | getImm(op); //| only bottom 16 bits
     advancePC(_cpu);
 }
 
