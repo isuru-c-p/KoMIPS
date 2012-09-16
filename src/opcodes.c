@@ -368,15 +368,33 @@ void SLL(cpu* _cpu, int op) {
     advancePC(_cpu);
 }
 
-void SLLV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcodehttp://www.youtube.com/watch?v=TgaLcAUI_7I&feature=related: SLLV\n"); exit(1); }
-void SLT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLT\n"); exit(1); }
-void SLTI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLTI\n"); exit(1); }
+void SLLV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLLV\n"); exit(1); }
 
+void SLT(cpu* _cpu, int op) {
+    _cpu->GPRs[getRd(op)]  =  _cpu->GPRs[getRt(op)] > _cpu->GPRs[getRs(op)] ? 1 : 0;
+    advancePC(_cpu);
+}
 
-void SLTIU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLTIU\n"); exit(1); }
+void SLTI(cpu* _cpu, int op) {
+    if( (int32_t)_cpu->GPRs[getRs(op)] < getSigned16(getImm(op))){
+		_cpu->GPRs[getRt(op)] = 1;
+	} else {
+		_cpu->GPRs[getRt(op)] = 0;
+	}
+	advancePC(_cpu);
+}
+
+void SLTIU(cpu* _cpu, int op) {
+    if( _cpu->GPRs[getRs(op)] < (uint32_t)getSigned16(getImm(op))){
+		_cpu->GPRs[getRt(op)] = 1;
+	} else {
+		_cpu->GPRs[getRt(op)] = 0;
+	}
+	advancePC(_cpu);
+}
 
 void SLTU(cpu* _cpu, int op) {
-    _cpu->GPRs[getRd(op)]  =  _cpu->GPRs[getRt(op)] > _cpu->GPRs[getRs(op)] ? 1 : 0;
+    _cpu->GPRs[getRd(op)]  =  ((int32_t)_cpu->GPRs[getRt(op)]) > ((int32_t)_cpu->GPRs[getRs(op)]) ? 1 : 0;
     advancePC(_cpu);
 }
 
