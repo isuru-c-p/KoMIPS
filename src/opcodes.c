@@ -471,7 +471,7 @@ void TNEI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TNEI\n"); ex
 void WAIT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: WAIT\n"); exit(1); }
 
 void XOR(cpu* _cpu, int op) { 
-    _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] & _cpu->GPRs[getRt(op)];
+    _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)] ^ _cpu->GPRs[getRt(op)];
     advancePC(_cpu);
 }
 
