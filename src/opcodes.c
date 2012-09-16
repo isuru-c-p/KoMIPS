@@ -32,6 +32,16 @@ static uint32_t signExtend18(uint32_t value){
         return value;
 }
 
+//return the unsigned word containing the sign extended 16 bit value
+static uint32_t signExtend16(uint32_t value){
+	value = value & 0x0000ffff;
+	if ((value&0x00008000) > 0 )
+	    return value | 0xffff0000;
+	else
+        return value;
+}
+
+
 void a(cpu* _cpu, int op) {
     fputs("ERROR bad opcode\n",stderr);
 }
@@ -177,7 +187,12 @@ void LUI(cpu* _cpu, int op) {
      advancePC(_cpu);
 }
 
-void LW(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LW\n"); exit(1); }
+void LW(cpu* _cpu, int op) {
+	uint32_t c= (uint32_t)getSigned16(op&0x0000ffff);
+    uint32_t addr = _cpu->GPRs[getRs(op)] +c;
+	_cpu->GPRs[getRt(op)] = readVAWordUnAligned(_cpu->_mmu,addr);
+	advancePC(_cpu);
+}
 
 
 
@@ -327,11 +342,18 @@ void SLL(cpu* _cpu, int op) {
     advancePC(_cpu);
 }
 
-void SLLV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLLV\n"); exit(1); }
+void SLLV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcodehttp://www.youtube.com/watch?v=TgaLcAUI_7I&feature=related: SLLV\n"); exit(1); }
 void SLT(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLT\n"); exit(1); }
 void SLTI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLTI\n"); exit(1); }
+
+
 void SLTIU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLTIU\n"); exit(1); }
-void SLTU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SLTU\n"); exit(1); }
+
+void SLTU(cpu* _cpu, int op) {
+    _cpu->GPRs[getRd(op)]  =  _cpu->GPRs[getRt(op)] > _cpu->GPRs[getRs(op)] ? 1 : 0;
+    advancePC(_cpu);
+}
+
 void SRA(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRA\n"); exit(1); }
 void SRAV(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRAV\n"); exit(1); }
 void SRL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SRL\n"); exit(1); }
