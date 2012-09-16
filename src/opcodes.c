@@ -232,7 +232,7 @@ void LWR(cpu* _cpu, int op) {
 	uint32_t c = getSigned16(op&0x0000ffff);
 	uint32_t addr = _cpu->GPRs[rs]+c;
 	uint32_t rtVal = _cpu->GPRs[rt];
-	uint32_t wordVal = readVAWordUnAligned(_cpu->_mmu,addr);
+	uint32_t wordVal = readVAWordUnAligned(_cpu->_mmu,addr-3);
 	uint32_t offset = addr % 4;
 	uint32_t result;
 	
