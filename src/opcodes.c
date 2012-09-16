@@ -226,7 +226,34 @@ void LWL(cpu* _cpu, int op){
 	advancePC(_cpu);
 }	
 
-void LWR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LWR\n"); exit(1); }
+void LWR(cpu* _cpu, int op) { 
+	uint32_t rt = getRt(op);
+	uint32_t rs = getRs(op);
+	uint32_t c = getSigned16(op&0x0000ffff);
+	uint32_t addr = _cpu->GPRs[rs]+c;
+	uint32_t rtVal = _cpu->GPRs[rt];
+	uint32_t wordVal = readVAWordUnAligned(_cpu->_mmu,addr);
+	uint32_t offset = addr % 4;
+	uint32_t result;
+	
+	switch(offset){
+	    case 3:
+	        result = wordVal;
+	        break;
+	    case 2:
+	        result = (wordVal & 0x00ffffff) | (rtVal & 0xff000000);
+	        break;
+	    case 1:
+	        result = (wordVal & 0xffff) | (rtVal & 0xffff0000);
+	        break;
+	    case 0:
+	        result = (wordVal & 0xff) | (rtVal & 0xffffff00);
+	        break;
+	}
+	
+	_cpu->GPRs[rt] =  result;
+	advancePC(_cpu);
+}
 
 
 void MADD(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MADD\n"); exit(1); }
