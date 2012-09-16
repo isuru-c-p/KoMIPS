@@ -104,8 +104,8 @@ void NAME(cpu* _cpu, int op){\
 	}\
 	else\
 	{\
+	    advancePC(_cpu);\
 		if(LIKELY){\
-		    advancePC(_cpu);\
 		    advancePC(_cpu);\
 		}\
 	}\
