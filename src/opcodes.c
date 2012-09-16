@@ -190,7 +190,7 @@ void LUI(cpu* _cpu, int op) {
 void LW(cpu* _cpu, int op) {
 	uint32_t c= (uint32_t)getSigned16(op&0x0000ffff);
     uint32_t addr = _cpu->GPRs[getRs(op)] +c;
-	_cpu->GPRs[getRt(op)] = readVAWordUnAligned(_cpu->_mmu,addr);
+	_cpu->GPRs[getRt(op)] = _cpu->_mmu->readVAWordAligned(_cpu->_mmu,addr);
 	advancePC(_cpu);
 }
 

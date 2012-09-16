@@ -57,3 +57,4 @@ int loadSREC(mmu* _mmu, char* filename);
 
 uint8_t readPAByte(mmu* _mmu, uint32_t p_addr);
 uint8_t readVAByte(mmu* _mmu, uint32_t v_addr);
+uint32_t readVAWordUnAligned(mmu* _mmu, uint32_t v_addr);
