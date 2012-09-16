@@ -302,17 +302,16 @@ void MULT(cpu* _cpu, int op) {
         uint32_t small[2];
     } data;
 
-    data.big = (int64_t)_cpu->GPRs[getRs(op)] * (int64_t)_cpu->GPRs[getRt(op)];
+    data.big = (int64_t)(int32_t)_cpu->GPRs[getRs(op)] * (int64_t)(int32_t)_cpu->GPRs[getRt(op)];
     
     if(KOMIPS_HOST_ENDIAN  == KOMIPS_LITTLE_ENDIAN){
-        _cpu->MultHI = data.small[1];
-        _cpu->MultLO = data.small[0];
-    
-    } else if (KOMIPS_HOST_ENDIAN  == KOMIPS_BIG_ENDIAN) {
         _cpu->MultHI = data.small[0];
         _cpu->MultLO = data.small[1];
+    
+    } else if (KOMIPS_HOST_ENDIAN  == KOMIPS_BIG_ENDIAN) {
+        _cpu->MultHI = data.small[1];
+        _cpu->MultLO = data.small[0];
     }
-
     advancePC(_cpu);
 }
 
@@ -326,12 +325,12 @@ void MULTU(cpu* _cpu, int op) {
     data.big = (uint64_t)_cpu->GPRs[getRs(op)] * (uint64_t)_cpu->GPRs[getRt(op)];
     
     if(KOMIPS_HOST_ENDIAN  == KOMIPS_LITTLE_ENDIAN){
-        _cpu->MultHI = data.small[1];
-        _cpu->MultLO = data.small[0];
-    
-    } else if (KOMIPS_HOST_ENDIAN  == KOMIPS_BIG_ENDIAN) {
         _cpu->MultHI = data.small[0];
         _cpu->MultLO = data.small[1];
+    
+    } else if (KOMIPS_HOST_ENDIAN  == KOMIPS_BIG_ENDIAN) {
+        _cpu->MultHI = data.small[1];
+        _cpu->MultLO = data.small[0];
     }
 
     advancePC(_cpu);
