@@ -17,8 +17,8 @@ typedef struct _cpu {
     uint8_t delay_slot;
 	uint8_t mode;
 	uint64_t pc;
-	uint64_t MultHI;
-	uint64_t MultLO;
+	uint32_t MultHI;
+	uint32_t MultLO;
 	uint32_t FCR0;
 	uint32_t FCR31;
 	uint8_t LL:1;

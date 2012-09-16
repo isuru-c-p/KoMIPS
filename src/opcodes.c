@@ -178,15 +178,70 @@ void LUI(cpu* _cpu, int op) {
 }
 
 void LW(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LW\n"); exit(1); }
-void LWL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LWL\n"); exit(1); }
+
+
+
+void LWL(cpu* _cpu, int op){
+
+	uint32_t rt = getRt(op);
+	uint32_t rs = getRs(op);
+	uint32_t c = getSigned16(op&0x0000ffff);
+	uint32_t addr = _cpu->GPRs[rs]+c;
+	uint32_t rtVal = _cpu->GPRs[rt];
+	uint32_t wordVal = readVAWordUnAligned(_cpu->_mmu,addr);
+	uint32_t offset = addr % 4;
+	uint32_t result;
+	
+	switch(offset){
+	    case 0:
+	        result = wordVal;
+	        break;
+	    case 1:
+	        result = (wordVal & 0xffffff00) | (rtVal & 0xff);
+	        break;
+	    case 2:
+	        result = (wordVal & 0xffff0000) | (rtVal & 0xffff);
+	        break;
+	    case 3:
+	        result = (wordVal & 0xff000000) | (rtVal & 0xffffff);
+	        break;
+	}
+	
+	_cpu->GPRs[rt] =  result;
+	advancePC(_cpu);
+}	
+
 void LWR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: LWR\n"); exit(1); }
+
+
 void MADD(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MADD\n"); exit(1); }
 void MADDU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MADDU\n"); exit(1); }
 void MFC0(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MFC0\n"); exit(1); }
-void MFHI(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MFHI\n"); exit(1); }
-void MFLO(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MFLO\n"); exit(1); }
-void MOVN(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MOVN\n"); exit(1); }
-void MOVZ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MOVZ\n"); exit(1); }
+
+void MFHI(cpu* _cpu, int op) {
+	_cpu->GPRs[getRd(op)] = _cpu->MultHI;
+	advancePC(_cpu);
+}
+
+void MFLO(cpu* _cpu, int op) {
+	_cpu->GPRs[getRd(op)] = _cpu->MultLO;
+	advancePC(_cpu);
+}
+
+void MOVN(cpu* _cpu, int op) {
+    if(_cpu->GPRs[getRt(op)] != 0){
+        _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)];
+    }
+    advancePC(_cpu);
+}
+
+void MOVZ(cpu* _cpu, int op) {
+    if(_cpu->GPRs[getRt(op)] == 0){
+        _cpu->GPRs[getRd(op)] = _cpu->GPRs[getRs(op)];
+    }
+    advancePC(_cpu);
+}
+
 void MSUB(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MSUB\n"); exit(1); }
 void MSUBU(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MSUBU\n"); exit(1); }
 void MTC0(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: MTC0\n"); exit(1); }

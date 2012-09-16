@@ -106,6 +106,14 @@ uint32_t readVAWordAligned(mmu* _mmu, uint32_t v_addr)
     return _mmu->readPAWordAligned(_mmu, p_addr);
 }
 
+uint32_t readVAWordUnAligned(mmu* _mmu, uint32_t v_addr)
+{
+   return  readVAByte(_mmu,v_addr+3)       +
+           readVAByte(_mmu,v_addr+2) << 8  +
+           readVAByte(_mmu,v_addr+1) << 16 +
+           readVAByte(_mmu,v_addr)   << 24;
+}
+
 void initMMU(mmu* _mmu)
 {
     _mmu->writePAByte = writePAByte;
