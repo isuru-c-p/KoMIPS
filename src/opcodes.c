@@ -392,8 +392,64 @@ void SW(cpu* _cpu, int op) {
     advancePC(_cpu);
 }
 
-void SWL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SWL\n"); exit(1); }
-void SWR(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SWR\n"); exit(1); }
+void SWL(cpu* _cpu, int op) { 
+	uint32_t rt = getRt(op);
+	uint32_t rs = getRs(op);
+	uint32_t c = getSigned16(op&0x0000ffff);
+	uint32_t addr = _cpu->GPRs[rs]+c;
+	uint32_t rtVal = _cpu->GPRs[rt];
+	uint32_t wordVal = readVAWordUnAligned(_cpu->_mmu,addr);
+	uint32_t offset = addr % 4;
+	uint32_t result;
+	
+	switch(offset){
+	    case 0:
+	        result = rtVal;
+	        break;
+	    case 1:
+	        result = (rtVal & 0xffffff00) | (wordVal & 0xff);
+	        break;
+	    case 2:
+	        result = (rtVal & 0xffff0000) | (wordVal & 0xffff);
+	        break;
+	    case 3:
+	        result = (rtVal & 0xff000000) | (wordVal & 0xffffff);
+	        break;
+	}
+	
+    writeVAWordUnAligned(_cpu->_mmu, addr, result);
+	advancePC(_cpu);
+}
+
+void SWR(cpu* _cpu, int op) { 
+	uint32_t rt = getRt(op);
+	uint32_t rs = getRs(op);
+	uint32_t c = getSigned16(op&0x0000ffff);
+	uint32_t addr = _cpu->GPRs[rs]+c;
+	uint32_t rtVal = _cpu->GPRs[rt];
+	uint32_t wordVal = readVAWordUnAligned(_cpu->_mmu,addr-3);
+	uint32_t offset = addr % 4;
+	uint32_t result;
+	
+	switch(offset){
+	    case 3:
+	        result = rtVal;
+	        break;
+	    case 2:
+	        result = (rtVal & 0x00ffffff) | (wordVal & 0xff000000);
+	        break;
+	    case 1:
+	        result = (rtVal & 0xffff) | (wordVal & 0xffff0000);
+	        break;
+	    case 0:
+	        result = (rtVal & 0xff) | (wordVal & 0xffffff00);
+	        break;
+	}
+	
+    writeVAWordUnAligned(_cpu->_mmu, addr-3, result);
+	advancePC(_cpu);
+}
+
 void SYNC(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SYNC\n"); exit(1); }
 void SYSCALL(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: SYSCALL\n"); exit(1); }
 void TEQ(cpu* _cpu, int op) { printf("ERROR, unimplemented opcode: TEQ\n"); exit(1); }
