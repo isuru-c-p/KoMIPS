@@ -108,11 +108,18 @@ uint32_t readVAWordAligned(mmu* _mmu, uint32_t v_addr)
 
 uint32_t readVAWordUnAligned(mmu* _mmu, uint32_t v_addr)
 {
-   
    return  readVAByte(_mmu,v_addr+3)       +
            (readVAByte(_mmu,v_addr+2) << 8)  +
            (readVAByte(_mmu,v_addr+1) << 16) +
            (readVAByte(_mmu,v_addr)   << 24);
+}
+
+void writeVAWordUnAligned(mmu* _mmu, uint32_t v_addr, uint32_t value)
+{
+    writeVAByte(_mmu, v_addr+3, value & 0xff);
+    writeVAByte(_mmu, v_addr+2, (value & 0xff00) >> 8); 
+    writeVAByte(_mmu, v_addr+1, (value & 0xff0000) >> 16); 
+    writeVAByte(_mmu, v_addr, (value & 0xff000000) >> 24); 
 }
 
 void initMMU(mmu* _mmu)
