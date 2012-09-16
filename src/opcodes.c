@@ -94,9 +94,10 @@ void b(cpu* _cpu, int op) {
 void NAME(cpu* _cpu, int op){\
 	uint32_t offset = signExtend18((op&0x0000ffff) * 4);\
 	uint32_t addr = _cpu->pc + 4 + offset;\
+	uint32_t cond = COND;\
 	if(!LIKELY) { DO_DELAY_SLOT(_cpu); } \
 	if (LINK){_cpu->GPRs[31] = _cpu->pc + 4;}\
-	if(COND)\
+	if(cond)\
 	{\
 	    if(LIKELY) { DO_DELAY_SLOT(_cpu); } \
 		_cpu->pc = addr;\
